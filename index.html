@@ -65,6 +65,8 @@
   .btn-ghost:hover{border-color:var(--brass);color:var(--brass);}
   .btn-brass{background:transparent;border-color:var(--brass);color:var(--brass);}
   .btn-brass:hover{background:rgba(198,155,61,0.12);}
+  .btn-success{background:#2A9D8F;color:#fff;}
+  .btn-success:hover{background:#3AB0A0;}
 
   /* ---------- hero ---------- */
   .hero{padding:96px 0 40px;overflow:hidden;}
@@ -182,23 +184,28 @@
   .stop-desc{font-size:13px;color:var(--text-dark-dim);margin-top:2px;line-height:1.5;}
   .stop-meta{font-family:var(--mono);font-size:11px;color:var(--brass-dim);margin-top:4px;}
   .result-map{width:100%;height:auto;margin:6px 0 26px;border:1px solid rgba(27,35,64,0.15);}
-  .result-footer{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid rgba(27,35,64,0.15);}
+  .result-footer{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid rgba(27,35,64,0.15);flex-wrap:wrap;gap:12px;}
   .budget-total{font-family:var(--mono);font-size:13px;}
   .loading-state{display:none;align-items:center;gap:10px;padding:60px 0;justify-content:center;color:var(--text-dark-dim);font-family:var(--mono);font-size:12.5px;}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--coral);}
+  .error-state{display:none;padding:40px 20px;color:#D32F2F;text-align:center;}
+  .error-state p{font-size:14px;margin:0;}
+  .api-status{font-size:11px;color:var(--text-light-dim);padding:4px 12px;border-radius:20px;background:rgba(42,157,143,0.15);border:1px solid rgba(42,157,143,0.3);}
+  .api-status.offline{background:rgba(212,55,55,0.15);border-color:rgba(212,55,55,0.3);color:#D43F3F;}
 
   /* ---------- footer cta ---------- */
   .cta-final{padding:110px 0;text-align:center;}
   .cta-final h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(30px,4.4vw,46px);margin:0 0 20px;max-width:640px;margin-left:auto;margin-right:auto;}
   .cta-final p{color:var(--text-light-dim);font-size:15.5px;margin:0 0 34px;}
   footer{border-top:1px solid rgba(198,155,61,0.18);padding:30px 0;}
-  .foot-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--text-light-dim);}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--text-light-dim);flex-wrap:wrap;gap:12px;}
 
   @media(max-width:860px){
     .step-grid{grid-template-columns:1fr;}
     .wl-grid{grid-template-columns:1fr;}
     .demo-grid{grid-template-columns:1fr;}
     .nav-links{display:none;}
+    .result-footer{flex-direction:column;align-items:stretch;}
   }
 </style>
 </head>
@@ -313,18 +320,21 @@
     <div class="section-head">
       <p class="eyebrow">Démo</p>
       <h2>Générez un itinéraire d'exemple</h2>
-      <p>Données de démonstration — l'API réelle branche DeepSeek et Mapbox derrière ce même formulaire.</p>
+      <p>L'API réelle génère l'itinéraire avec DeepSeek et Mapbox — le PDF est téléchargeable.</p>
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
+        <span class="api-status" id="apiStatus">🔌 Connexion à l'API...</span>
+      </div>
     </div>
     <div class="demo-grid">
       <form class="cartouche" id="demoForm">
         <div class="field">
           <label>Destination</label>
-          <input type="text" id="fDestination" value="Kinshasa" placeholder="Ex: Kinshasa">
+          <input type="text" id="fDestination" value="Kinshasa" placeholder="Ex: Kinshasa" required>
         </div>
         <div class="row-2">
           <div class="field">
             <label>Durée (jours)</label>
-            <input type="number" id="fDays" value="3" min="1" max="6">
+            <input type="number" id="fDays" value="3" min="1" max="7" required>
           </div>
           <div class="field">
             <label>Budget</label>
@@ -339,7 +349,7 @@
           <label>Centres d'intérêt</label>
           <div class="chips" id="chipGroup">
             <div class="chip active" data-val="gastronomie">Gastronomie</div>
-            <div class="chip" data-val="culture">Culture</div>
+            <div class="chip active" data-val="culture">Culture</div>
             <div class="chip" data-val="nature">Nature</div>
             <div class="chip" data-val="vie nocturne">Vie nocturne</div>
           </div>
@@ -349,17 +359,26 @@
             <input type="checkbox" id="fAccess"> Nécessite un itinéraire accessible (fauteuil roulant)
           </label>
         </div>
-        <button type="submit" class="btn btn-coral" style="width:100%;justify-content:center;margin-top:8px;">Générer l'itinéraire</button>
+        <div class="field">
+          <label>Couleur de marque (pour le PDF)</label>
+          <input type="color" id="fBrandColor" value="#1d3557" style="width:100%;padding:4px;height:44px;cursor:pointer;">
+        </div>
+        <button type="submit" class="btn btn-coral" style="width:100%;justify-content:center;margin-top:8px;" id="generateBtn">
+          🚀 Générer l'itinéraire
+        </button>
       </form>
 
       <div class="cartouche demo-result">
         <div class="empty-state" id="emptyState">
           <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.2"/><path d="M20 6L23 18L20 34L17 18Z" fill="currentColor"/></svg>
-          <p>Remplissez le formulaire et cliquez sur « Générer l'itinéraire » pour voir un exemple de rendu.</p>
+          <p>Remplissez le formulaire et cliquez sur « Générer l'itinéraire » pour obtenir un PDF prêt à télécharger.</p>
         </div>
         <div class="loading-state" id="loadingState">
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
           <span id="loadingLabel">Génération en cours…</span>
+        </div>
+        <div class="error-state" id="errorState">
+          <p id="errorMessage">❌ Une erreur est survenue</p>
         </div>
         <div class="result-inner" id="resultInner"></div>
       </div>
@@ -386,6 +405,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const API_BASE_URL = 'https://itinerary-generator-lxal.onrender.com';
+
+// ============================================================
+// CORNERS DES CARTES
+// ============================================================
 document.querySelectorAll('.cartouche').forEach(function(box){
   ['tl','tr','bl','br'].forEach(function(pos){
     var span = document.createElement('span');
@@ -394,6 +421,9 @@ document.querySelectorAll('.cartouche').forEach(function(box){
   });
 });
 
+// ============================================================
+// GSAP ANIMATIONS
+// ============================================================
 gsap.registerPlugin(ScrollTrigger);
 
 var path = document.getElementById('routePathDraw');
@@ -427,152 +457,202 @@ gsap.from('.mock-pdf', {
   y: 30, opacity: 0, duration: 0.7, ease: 'power2.out'
 });
 
+// ============================================================
+// SWATCHES (marque blanche)
+// ============================================================
 document.querySelectorAll('.swatch').forEach(function(sw){
   sw.addEventListener('click', function(){
     document.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('active'); });
     sw.classList.add('active');
     gsap.to('#mockHead', { backgroundColor: sw.dataset.color, duration: 0.35 });
+    document.getElementById('fBrandColor').value = sw.dataset.color;
   });
 });
 
+// ============================================================
+// CHIPS (centres d'intérêt)
+// ============================================================
 document.querySelectorAll('.chip').forEach(function(chip){
   chip.addEventListener('click', function(){ chip.classList.toggle('active'); });
 });
 
-var SAMPLE_DATA = {
-  kinshasa: {
-    destination: 'Kinshasa', duration_days: 3,
-    summary: "Trois jours entre marchés vivants, bords du fleuve Congo et scène culturelle locale, pensés pour un rythme tranquille.",
-    days: [
-      { day_number: 1, title: 'Rive et marché', stops: [
-        { name: 'Marché central', description: "Immersion dans l'artisanat et les produits locaux dès le matin.", time_of_day: 'matin', estimated_cost: 'Gratuit' },
-        { name: 'Bord du fleuve Congo', description: 'Promenade au coucher de soleil face au fleuve.', time_of_day: 'soir', estimated_cost: '10 USD' }
-      ]},
-      { day_number: 2, title: 'Culture et mémoire', stops: [
-        { name: 'Académie des Beaux-Arts', description: "Galerie d'art contemporain congolais, expositions tournantes.", time_of_day: 'matin', estimated_cost: '5 USD' },
-        { name: "Restaurant Chez Bruxelles", description: 'Cuisine congolaise traditionnelle, portions généreuses.', time_of_day: 'après-midi', estimated_cost: '20-30 USD' }
-      ]},
-      { day_number: 3, title: 'Quartiers et détente', stops: [
-        { name: 'Quartier de la Gombe', description: "Balade dans le quartier d'affaires en bord de fleuve.", time_of_day: 'matin', estimated_cost: 'Gratuit' }
-      ]}
-    ],
-    budget_estimate_total: '180-220 USD'
-  },
-  zanzibar: {
-    destination: 'Zanzibar', duration_days: 3,
-    summary: "Un aller-retour entre les ruelles de Stone Town et les plages du nord, pour un séjour balnéaire et culturel.",
-    days: [
-      { day_number: 1, title: 'Stone Town', stops: [
-        { name: 'Vieille ville de Stone Town', description: 'Ruelles historiques classées UNESCO, portes sculptées.', time_of_day: 'matin', estimated_cost: 'Gratuit' },
-        { name: "Marché aux épices", description: "Visite guidée d'une plantation d'épices voisine.", time_of_day: 'après-midi', estimated_cost: '15 USD' }
-      ]},
-      { day_number: 2, title: 'Plages du nord', stops: [
-        { name: 'Plage de Nungwi', description: 'Eaux turquoise, idéal pour la plongée avec tuba.', time_of_day: 'matin', estimated_cost: '25 USD' }
-      ]},
-      { day_number: 3, title: 'Retour côtier', stops: [
-        { name: 'Village de pêcheurs de Kendwa', description: 'Coucher de soleil sur la plage, dîner de fruits de mer.', time_of_day: 'soir', estimated_cost: '30 USD' }
-      ]}
-    ],
-    budget_estimate_total: '260-300 USD'
-  }
-};
-
-function genericItinerary(destination, days){
-  var stopNames = [
-    ['Marché central de ' + destination, "Premier contact avec l'ambiance locale et l'artisanat."],
-    ['Point de vue sur ' + destination, "Vue d'ensemble pour se repérer dans la ville."],
-    ['Quartier historique de ' + destination, "Balade dans les rues les plus anciennes."],
-    ['Table locale recommandée', 'Un restaurant apprécié des habitants.'],
-    ['Espace culturel de ' + destination, 'Musée ou galerie mettant en avant la scène locale.']
-  ];
-  var out = { destination: destination, duration_days: days,
-    summary: 'Un aperçu de ' + days + ' jours à ' + destination + ', pensé pour découvrir l\'essentiel à un rythme mesuré.',
-    days: [], budget_estimate_total: (days * 55) + '-' + (days * 80) + ' USD' };
-  for (var d = 1; d <= days; d++){
-    var stops = [];
-    var n = d % 2 === 0 ? 1 : 2;
-    for (var s = 0; s < n; s++){
-      var pick = stopNames[(d + s) % stopNames.length];
-      stops.push({ name: pick[0], description: pick[1], time_of_day: s === 0 ? 'matin' : 'après-midi', estimated_cost: (10 + d * 5) + ' USD' });
+// ============================================================
+// VÉRIFICATION DE L'API
+// ============================================================
+async function checkApiHealth() {
+  const statusEl = document.getElementById('apiStatus');
+  try {
+    const response = await fetch(`${API_BASE_URL}/health`, { 
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (response.ok) {
+      statusEl.textContent = '✅ API connectée';
+      statusEl.className = 'api-status';
+    } else {
+      throw new Error('API non disponible');
     }
-    out.days.push({ day_number: d, title: 'Jour ' + d, stops: stops });
+  } catch (err) {
+    statusEl.textContent = '⚠️ API hors ligne (mode démo)';
+    statusEl.className = 'api-status offline';
   }
-  return out;
 }
+checkApiHealth();
 
-function buildResultMapSvg(itinerary){
-  var allStops = [];
-  itinerary.days.forEach(function(day){ day.stops.forEach(function(s){ allStops.push(s); }); });
-  var w = 560, h = 200, pad = 40;
-  var pts = allStops.map(function(_, i){
-    var x = pad + (i * (w - pad * 2) / Math.max(allStops.length - 1, 1));
-    var y = 60 + (i % 2 === 0 ? 0 : 90) + (Math.sin(i) * 12);
-    return [x, y];
-  });
-  var d = 'M' + pts.map(function(p){ return p[0] + ',' + p[1]; }).join(' L');
-  var pins = pts.map(function(p, i){
-    return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="10" fill="#E4572E"/>' +
-      '<text x="' + p[0] + '" y="' + (p[1] + 4) + '" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fff">' + (i + 1) + '</text>';
-  }).join('');
-  return '<svg class="result-map" viewBox="0 0 ' + w + ' ' + h + '" id="resultMapSvg">' +
-    '<rect width="' + w + '" height="' + h + '" fill="#F8F3E7"/>' +
-    '<path d="' + d + '" fill="none" stroke="#C69B3D" stroke-width="1.4" stroke-dasharray="4 6"/>' +
-    '<path d="' + d + '" id="resultMapDraw" fill="none" stroke="#3A7D71" stroke-width="1.6"/>' +
-    pins + '</svg>';
-}
-
-document.getElementById('demoForm').addEventListener('submit', function(e){
+// ============================================================
+// FONCTION PRINCIPALE : GÉNÉRATION
+// ============================================================
+document.getElementById('demoForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  var destination = document.getElementById('fDestination').value.trim() || 'Kinshasa';
-  var days = parseInt(document.getElementById('fDays').value, 10) || 3;
-  var key = destination.toLowerCase().trim();
-  var itinerary = SAMPLE_DATA[key] ? JSON.parse(JSON.stringify(SAMPLE_DATA[key])) : genericItinerary(destination, days);
 
-  var empty = document.getElementById('emptyState');
-  var loading = document.getElementById('loadingState');
-  var resultInner = document.getElementById('resultInner');
+  const generateBtn = document.getElementById('generateBtn');
+  const empty = document.getElementById('emptyState');
+  const loading = document.getElementById('loadingState');
+  const error = document.getElementById('errorState');
+  const resultInner = document.getElementById('resultInner');
 
+  // Récupération des valeurs
+  const destination = document.getElementById('fDestination').value.trim() || 'Kinshasa';
+  const days = parseInt(document.getElementById('fDays').value, 10) || 3;
+  const budget = document.getElementById('fBudget').value;
+  const brandColor = document.getElementById('fBrandColor').value || '#1d3557';
+  const access = document.getElementById('fAccess').checked;
+
+  // Centres d'intérêt
+  const interests = [];
+  document.querySelectorAll('.chip.active').forEach(function(chip){
+    interests.push(chip.dataset.val);
+  });
+
+  // Affichage du chargement
   empty.style.display = 'none';
+  error.style.display = 'none';
   resultInner.style.display = 'none';
   loading.style.display = 'flex';
+  generateBtn.disabled = true;
+  generateBtn.textContent = '⏳ Génération...';
+
+  // Animation des dots
   gsap.fromTo('.dot', { y: 0 }, { y: -6, duration: 0.35, stagger: 0.1, repeat: 5, yoyo: true });
 
-  setTimeout(function(){
+  try {
+    // Construction de la requête
+    const requestBody = {
+      destination: destination,
+      days: days,
+      budget: budget,
+      interests: interests,
+      constraints: access ? 'accessible en fauteuil roulant' : '',
+      travelerProfile: 'voyageur',
+      agencyBranding: {
+        primaryColor: brandColor,
+        logoUrl: null
+      },
+      format: 'pdf'
+    };
+
+    console.log('📤 Envoi de la requête:', requestBody);
+
+    // Appel à l'API
+    const response = await fetch(`${API_BASE_URL}/generate-itinerary`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/pdf'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Gestion des erreurs
+    if (!response.ok) {
+      let errorMsg = `Erreur ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMsg = errorData.error || errorData.detail || errorMsg;
+      } catch (e) {
+        // Si la réponse n'est pas du JSON
+      }
+      throw new Error(errorMsg);
+    }
+
+    // Récupération du PDF
+    const pdfBlob = await response.blob();
+    
+    // Vérification que c'est bien un PDF
+    if (!pdfBlob.type.includes('pdf')) {
+      // Si ce n'est pas un PDF, essayer de lire comme JSON
+      const text = await pdfBlob.text();
+      try {
+        const json = JSON.parse(text);
+        if (json.error) throw new Error(json.error);
+        if (json.detail) throw new Error(json.detail);
+        throw new Error('Format de réponse inattendu');
+      } catch (e) {
+        throw new Error(e.message || 'Erreur inconnue');
+      }
+    }
+
+    // Génération du nom de fichier
+    const fileName = `itineraire-${destination.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+
+    // Création de l'URL de téléchargement
+    const url = URL.createObjectURL(pdfBlob);
+
+    // Affichage du résultat avec bouton de téléchargement
     loading.style.display = 'none';
     resultInner.style.display = 'block';
 
-    var html = buildResultMapSvg(itinerary);
-    html += '<p style="font-size:13.5px;color:var(--text-dark-dim);margin-bottom:20px;">' + itinerary.summary + '</p>';
-    itinerary.days.forEach(function(day){
-      html += '<div class="day-block"><p class="day-title">Jour ' + day.day_number + ' — ' + day.title + '</p>';
-      day.stops.forEach(function(stop, i){
-        html += '<div class="stop-row"><div class="stop-badge">' + (i + 1) + '</div><div>' +
-          '<div class="stop-name">' + stop.name + ' <span style="font-weight:400;color:var(--text-dark-dim);">· ' + stop.time_of_day + '</span></div>' +
-          '<div class="stop-desc">' + stop.description + '</div>' +
-          '<div class="stop-meta">' + stop.estimated_cost + '</div></div></div>';
-      });
-      html += '</div>';
-    });
-    html += '<div class="result-footer"><span class="budget-total">Budget estimé : ' + itinerary.budget_estimate_total + '</span>' +
-      '<button type="button" class="btn btn-ghost" style="border-color:rgba(27,35,64,0.22);color:var(--text-dark);" id="fakeDownload">Télécharger le PDF</button></div>';
+    const successHtml = `
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:48px;margin-bottom:16px;">✅</div>
+        <h3 style="font-family:var(--serif);font-style:italic;font-weight:500;font-size:22px;margin:0 0 8px;">
+          Itinéraire généré !
+        </h3>
+        <p style="color:var(--text-dark-dim);font-size:14px;margin:0 0 20px;">
+          ${destination} — ${days} jour${days > 1 ? 's' : ''}
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="${url}" download="${fileName}" class="btn btn-success" style="background:#2A9D8F;color:#fff;border:none;">
+            📥 Télécharger le PDF
+          </a>
+          <button type="button" class="btn btn-ghost" style="border-color:rgba(27,35,64,0.22);color:var(--text-dark);" onclick="location.reload();">
+            🔄 Nouvel itinéraire
+          </button>
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:var(--text-dark-dim);font-family:var(--mono);">
+          Fichier : ${fileName} (${(pdfBlob.size / 1024).toFixed(1)} KB)
+        </div>
+      </div>
+    `;
 
-    resultInner.innerHTML = html;
+    resultInner.innerHTML = successHtml;
 
-    var mapPath = document.getElementById('resultMapDraw');
-    var mapLen = mapPath.getTotalLength();
-    mapPath.style.strokeDasharray = mapLen;
-    mapPath.style.strokeDashoffset = mapLen;
-    gsap.to(mapPath, { strokeDashoffset: 0, duration: 1, ease: 'power2.inOut' });
+    // Nettoyer l'URL après un délai
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
 
-    gsap.from('.day-block', { y: 16, opacity: 0, duration: 0.4, stagger: 0.12, ease: 'power2.out', delay: 0.2 });
+  } catch (err) {
+    console.error('❌ Erreur:', err);
+    loading.style.display = 'none';
+    error.style.display = 'block';
+    document.getElementById('errorMessage').textContent = `❌ ${err.message || 'Une erreur est survenue lors de la génération'}`;
 
-    document.getElementById('fakeDownload').addEventListener('click', function(){
-      this.textContent = 'PDF (démo) — pas de fichier réel';
-      var btn = this;
-      setTimeout(function(){ btn.textContent = 'Télécharger le PDF'; }, 2200);
-    });
-  }, 900);
+    // Réafficher l'état vide après 4 secondes en cas d'erreur
+    setTimeout(() => {
+      error.style.display = 'none';
+      empty.style.display = 'flex';
+    }, 4000);
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = '🚀 Générer l\'itinéraire';
+  }
 });
+
+// ============================================================
+// CORRECTION : Le helper addOne n'est plus nécessaire
+// car nous utilisons directement l'index dans le frontend
+// ============================================================
+console.log('✅ Cartouche - Interface connectée à l\'API Render');
+console.log(`📡 API: ${API_BASE_URL}`);
 </script>
 </body>
 </html>
