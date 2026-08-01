@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartouche — Itinéraires de voyage en marque blanche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10162B;
+    --ink-2:#182042;
+    --parchment:#EFE6D3;
+    --parchment-2:#F8F3E7;
+    --brass:#C69B3D;
+    --brass-dim:#8E6E2A;
+    --coral:#E4572E;
+    --teal:#3A7D71;
+    --text-light:#F3EFE3;
+    --text-light-dim:rgba(243,239,227,0.62);
+    --text-dark:#1B2340;
+    --text-dark-dim:rgba(27,35,64,0.62);
+    --serif:'Fraunces',serif;
+    --sans:'Manrope',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:var(--ink);
+    color:var(--text-light);
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px;}
+  section{position:relative;}
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(16,22,43,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(198,155,61,0.18);
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;height:72px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-style:italic;font-weight:500;font-size:21px;letter-spacing:0.01em;}
+  .brand svg{width:26px;height:26px;flex-shrink:0;}
+  .nav-links{display:flex;align-items:center;gap:34px;font-size:14px;color:var(--text-light-dim);}
+  .nav-links a{transition:color .2s;}
+  .nav-links a:hover{color:var(--text-light);}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 22px;border-radius:2px;
+    font-family:var(--sans);font-weight:600;font-size:13.5px;
+    letter-spacing:0.02em;cursor:pointer;border:1px solid transparent;
+    transition:transform .18s ease, background .2s, border-color .2s;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-coral{background:var(--coral);color:#FBF3EC;}
+  .btn-coral:hover{background:#F0663D;}
+  .btn-ghost{border-color:rgba(243,239,227,0.28);color:var(--text-light);}
+  .btn-ghost:hover{border-color:var(--brass);color:var(--brass);}
+  .btn-brass{background:transparent;border-color:var(--brass);color:var(--brass);}
+  .btn-brass:hover{background:rgba(198,155,61,0.12);}
+
+  /* ---------- hero ---------- */
+  .hero{padding:96px 0 40px;overflow:hidden;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--brass);margin:0 0 22px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:'';width:22px;height:1px;background:var(--brass);}
+  h1{
+    font-family:var(--serif);font-weight:500;font-style:italic;
+    font-size:clamp(38px,5.6vw,64px);line-height:1.06;letter-spacing:-0.01em;
+    margin:0 0 26px;max-width:820px;color:var(--text-light);
+  }
+  h1 em{color:var(--coral);font-style:italic;}
+  .hero p.lede{
+    font-size:17px;line-height:1.65;color:var(--text-light-dim);
+    max-width:480px;margin:0 0 36px;
+  }
+  .hero-ctas{display:flex;gap:14px;margin-bottom:70px;}
+  .route-stage{width:100%;height:auto;display:block;}
+  .route-stage .pin-label{font-family:var(--mono);font-size:11px;fill:var(--text-light-dim);}
+  .route-stage .pin-num{font-family:var(--mono);font-size:12px;font-weight:500;fill:var(--ink);}
+
+  /* ---------- section headers ---------- */
+  .section-head{max-width:560px;margin:0 0 52px;}
+  .section-head .eyebrow{color:var(--brass-dim);}
+  .section-head h2{
+    font-family:var(--serif);font-weight:500;font-style:italic;
+    font-size:clamp(28px,3.4vw,38px);line-height:1.12;margin:0 0 14px;
+  }
+  .section-head p{font-size:15.5px;line-height:1.6;margin:0;}
+  .light-section{background:var(--parchment);color:var(--text-dark);}
+  .light-section .section-head p{color:var(--text-dark-dim);}
+
+  /* ---------- cartouche frame ---------- */
+  .cartouche{
+    position:relative;
+    border:1px solid rgba(198,155,61,0.35);
+    padding:30px 28px;
+  }
+  .light-section .cartouche{border-color:rgba(142,110,42,0.35);}
+  .corner{position:absolute;width:14px;height:14px;pointer-events:none;}
+  .corner.tl{top:-1px;left:-1px;border-top:2px solid var(--brass);border-left:2px solid var(--brass);}
+  .corner.tr{top:-1px;right:-1px;border-top:2px solid var(--brass);border-right:2px solid var(--brass);}
+  .corner.bl{bottom:-1px;left:-1px;border-bottom:2px solid var(--brass);border-left:2px solid var(--brass);}
+  .corner.br{bottom:-1px;right:-1px;border-bottom:2px solid var(--brass);border-right:2px solid var(--brass);}
+
+  /* ---------- how it works ---------- */
+  .steps{padding:100px 0;}
+  .step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .step-num{font-family:var(--mono);font-size:12px;color:var(--brass-dim);margin:0 0 16px;}
+  .step-grid h3{font-family:var(--serif);font-weight:600;font-style:normal;font-size:19px;margin:0 0 10px;}
+  .step-grid p{font-size:14px;line-height:1.6;margin:0;color:var(--text-dark-dim);}
+
+  /* ---------- white label ---------- */
+  .whitelabel{padding:100px 0;background:var(--ink);}
+  .wl-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+  .wl-copy p{font-size:15.5px;line-height:1.7;color:var(--text-light-dim);max-width:460px;}
+  .wl-list{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-direction:column;gap:14px;}
+  .wl-list li{display:flex;gap:12px;font-size:14.5px;color:var(--text-light-dim);align-items:flex-start;}
+  .wl-list li::before{content:'—';color:var(--coral);flex-shrink:0;}
+  .mock-pdf{background:var(--parchment-2);border-radius:3px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);}
+  .mock-pdf-head{padding:26px 26px 22px;color:#fff;transition:background .3s ease;}
+  .mock-pdf-head .agency{font-family:var(--mono);font-size:11px;letter-spacing:0.06em;opacity:0.85;margin:0 0 6px;text-transform:uppercase;}
+  .mock-pdf-head h4{font-family:var(--serif);font-style:italic;font-weight:500;font-size:24px;margin:0;}
+  .mock-pdf-body{padding:22px 26px;}
+  .mock-line{height:8px;background:rgba(27,35,64,0.1);border-radius:2px;margin-bottom:10px;}
+  .mock-line.w60{width:60%;}
+  .mock-line.w80{width:80%;}
+  .mock-line.w40{width:40%;}
+  .color-row{display:flex;align-items:center;gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(243,239,227,0.14);}
+  .color-row label{font-size:13px;color:var(--text-light-dim);font-family:var(--mono);}
+  .color-swatches{display:flex;gap:8px;}
+  .swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;}
+  .swatch:hover{transform:scale(1.12);}
+  .swatch.active{border-color:var(--text-light);}
+
+  /* ---------- demo ---------- */
+  .demo{padding:100px 0 120px;}
+  .demo-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:26px;align-items:start;}
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-dark-dim);margin-bottom:7px;}
+  .field input[type="text"],.field input[type="number"],.field select{
+    width:100%;padding:11px 13px;border:1px solid rgba(27,35,64,0.22);background:var(--parchment-2);
+    font-family:var(--sans);font-size:14px;color:var(--text-dark);border-radius:2px;
+  }
+  .field input:focus,.field select:focus{outline:none;border-color:var(--coral);}
+  .row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    padding:7px 13px;border:1px solid rgba(27,35,64,0.22);border-radius:20px;
+    font-size:12.5px;cursor:pointer;color:var(--text-dark-dim);background:transparent;
+    transition:all .15s;
+  }
+  .chip.active{background:var(--ink);border-color:var(--ink);color:var(--text-light);}
+  .check-row{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:13.5px;color:var(--text-dark-dim);}
+  .check-row input{accent-color:var(--coral);}
+  .demo-result{min-height:420px;}
+  .result-inner{display:none;}
+  .empty-state{
+    height:100%;min-height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;color:var(--text-dark-dim);gap:10px;padding:40px 20px;
+  }
+  .empty-state svg{width:40px;height:40px;opacity:0.5;margin-bottom:6px;}
+  .empty-state p{font-size:13.5px;max-width:280px;margin:0;}
+  .day-block{margin-bottom:22px;}
+  .day-title{font-family:var(--mono);font-size:12px;letter-spacing:0.04em;text-transform:uppercase;color:var(--brass-dim);margin:0 0 12px;display:flex;align-items:center;gap:10px;}
+  .day-title::after{content:'';flex:1;height:1px;background:rgba(27,35,64,0.15);}
+  .stop-row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(27,35,64,0.08);}
+  .stop-badge{
+    width:22px;height:22px;border-radius:50%;background:var(--coral);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;flex-shrink:0;
+  }
+  .stop-name{font-weight:700;font-size:13.5px;}
+  .stop-desc{font-size:13px;color:var(--text-dark-dim);margin-top:2px;line-height:1.5;}
+  .stop-meta{font-family:var(--mono);font-size:11px;color:var(--brass-dim);margin-top:4px;}
+  .result-map{width:100%;height:auto;margin:6px 0 26px;border:1px solid rgba(27,35,64,0.15);}
+  .result-footer{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid rgba(27,35,64,0.15);}
+  .budget-total{font-family:var(--mono);font-size:13px;}
+  .loading-state{display:none;align-items:center;gap:10px;padding:60px 0;justify-content:center;color:var(--text-dark-dim);font-family:var(--mono);font-size:12.5px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--coral);}
+
+  /* ---------- footer cta ---------- */
+  .cta-final{padding:110px 0;text-align:center;}
+  .cta-final h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(30px,4.4vw,46px);margin:0 0 20px;max-width:640px;margin-left:auto;margin-right:auto;}
+  .cta-final p{color:var(--text-light-dim);font-size:15.5px;margin:0 0 34px;}
+  footer{border-top:1px solid rgba(198,155,61,0.18);padding:30px 0;}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--text-light-dim);}
+
+  @media(max-width:860px){
+    .step-grid{grid-template-columns:1fr;}
+    .wl-grid{grid-template-columns:1fr;}
+    .demo-grid{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#C69B3D" stroke-width="1.4"/><path d="M20 6L23 18L20 34L17 18Z" fill="#C69B3D"/><circle cx="20" cy="20" r="2.4" fill="#E4572E"/></svg>
+      Cartouche
+    </div>
+    <div class="nav-links">
+      <a href="#comment">Comment ça marche</a>
+      <a href="#marque-blanche">Marque blanche</a>
+      <a href="#demo">Démo</a>
+    </div>
+    <a href="#demo" class="btn btn-coral">Essayer la démo</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">API pour agences de voyage & OTA</p>
+    <h1>Des itinéraires <em>sur-mesure</em>, générés par IA, livrés en PDF à vos couleurs.</h1>
+    <p class="lede">Cartouche transforme les contraintes d'un voyageur en un plan jour par jour, carte à l'appui, exportable en PDF — sous la marque de votre agence, en quelques secondes.</p>
+    <div class="hero-ctas">
+      <a href="#demo" class="btn btn-coral">Essayer la démo</a>
+      <a href="#comment" class="btn btn-ghost">Comment ça marche</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <svg class="route-stage" viewBox="0 0 1140 220" id="heroRoute">
+      <line x1="0" y1="55" x2="1140" y2="55" stroke="#F3EFE3" stroke-opacity="0.06"/>
+      <line x1="0" y1="110" x2="1140" y2="110" stroke="#F3EFE3" stroke-opacity="0.06"/>
+      <line x1="0" y1="165" x2="1140" y2="165" stroke="#F3EFE3" stroke-opacity="0.06"/>
+      <path id="routePath" d="M60,150 C220,150 260,60 400,60 C520,60 560,170 700,170 C830,170 870,50 1030,50" fill="none" stroke="#C69B3D" stroke-width="1.4" stroke-dasharray="4 6"/>
+      <path id="routePathDraw" d="M60,150 C220,150 260,60 400,60 C520,60 560,170 700,170 C830,170 870,50 1030,50" fill="none" stroke="#E4572E" stroke-width="1.6"/>
+      <g class="pin" data-pin="1"><circle cx="60" cy="150" r="12" fill="#E4572E"/><text x="60" y="154" text-anchor="middle" class="pin-num">1</text><text x="60" y="180" text-anchor="middle" class="pin-label">Saisie</text></g>
+      <g class="pin" data-pin="2"><circle cx="400" cy="60" r="12" fill="#E4572E"/><text x="400" y="64" text-anchor="middle" class="pin-num">2</text><text x="400" y="34" text-anchor="middle" class="pin-label">Génération IA</text></g>
+      <g class="pin" data-pin="3"><circle cx="700" cy="170" r="12" fill="#E4572E"/><text x="700" y="174" text-anchor="middle" class="pin-num">3</text><text x="700" y="200" text-anchor="middle" class="pin-label">Carte</text></g>
+      <g class="pin" data-pin="4"><circle cx="1030" cy="50" r="12" fill="#E4572E"/><text x="1030" y="54" text-anchor="middle" class="pin-num">4</text><text x="1030" y="24" text-anchor="middle" class="pin-label">Export PDF</text></g>
+    </svg>
+  </div>
+</section>
+
+<section class="steps light-section" id="comment">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Comment ça marche</p>
+      <h2>Trois étapes, aucun code requis</h2>
+      <p>Votre équipe entre les contraintes, Cartouche s'occupe du reste — du texte à la mise en page.</p>
+    </div>
+    <div class="step-grid">
+      <div class="cartouche">
+        <p class="step-num">01</p>
+        <h3>Contraintes du voyageur</h3>
+        <p>Destination, durée, budget, centres d'intérêt, accessibilité — saisis en quelques champs ou via votre propre interface.</p>
+      </div>
+      <div class="cartouche">
+        <p class="step-num">02</p>
+        <h3>Génération par l'IA</h3>
+        <p>Un plan jour par jour est produit, avec description, coût estimé et coordonnées GPS de chaque arrêt.</p>
+      </div>
+      <div class="cartouche">
+        <p class="step-num">03</p>
+        <h3>Carte & export PDF</h3>
+        <p>La carte de l'itinéraire est générée automatiquement, mise en page et exportée en PDF prêt à envoyer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="whitelabel" id="marque-blanche">
+  <div class="wrap">
+    <div class="wl-grid">
+      <div class="wl-copy">
+        <p class="eyebrow">Marque blanche</p>
+        <h2 style="font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(26px,3.2vw,34px);margin:0 0 18px;">Le PDF porte votre marque, pas la nôtre</h2>
+        <p>Chaque agence connectée personnalise son rendu : logo, couleur principale, mise en page du document. Vos clients ne voient jamais Cartouche.</p>
+        <ul class="wl-list">
+          <li>Logo et couleur d'accent appliqués sur tout le document</li>
+          <li>Une clé API par agence, facturation à l'usage</li>
+          <li>Sortie PDF ou JSON brut pour l'intégrer à votre propre front</li>
+        </ul>
+      </div>
+      <div class="mock-pdf">
+        <div class="mock-pdf-head" id="mockHead" style="background:#1d3557;">
+          <p class="agency">Agence Horizon Voyages</p>
+          <h4>Kinshasa, 3 jours</h4>
+        </div>
+        <div class="mock-pdf-body">
+          <div class="mock-line w80"></div>
+          <div class="mock-line w60"></div>
+          <div class="mock-line w40"></div>
+          <div class="color-row">
+            <label>Couleur de marque</label>
+            <div class="color-swatches">
+              <div class="swatch active" data-color="#1d3557" style="background:#1d3557;"></div>
+              <div class="swatch" data-color="#3A7D71" style="background:#3A7D71;"></div>
+              <div class="swatch" data-color="#8E6E2A" style="background:#8E6E2A;"></div>
+              <div class="swatch" data-color="#7A2E3A" style="background:#7A2E3A;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo light-section" id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Démo</p>
+      <h2>Générez un itinéraire d'exemple</h2>
+      <p>Données de démonstration — l'API réelle branche DeepSeek et Mapbox derrière ce même formulaire.</p>
+    </div>
+    <div class="demo-grid">
+      <form class="cartouche" id="demoForm">
+        <div class="field">
+          <label>Destination</label>
+          <input type="text" id="fDestination" value="Kinshasa" placeholder="Ex: Kinshasa">
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Durée (jours)</label>
+            <input type="number" id="fDays" value="3" min="1" max="6">
+          </div>
+          <div class="field">
+            <label>Budget</label>
+            <select id="fBudget">
+              <option value="économique">Économique</option>
+              <option value="moyen" selected>Moyen</option>
+              <option value="premium">Premium</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Centres d'intérêt</label>
+          <div class="chips" id="chipGroup">
+            <div class="chip active" data-val="gastronomie">Gastronomie</div>
+            <div class="chip" data-val="culture">Culture</div>
+            <div class="chip" data-val="nature">Nature</div>
+            <div class="chip" data-val="vie nocturne">Vie nocturne</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="check-row" style="text-transform:none;font-family:var(--sans);">
+            <input type="checkbox" id="fAccess"> Nécessite un itinéraire accessible (fauteuil roulant)
+          </label>
+        </div>
+        <button type="submit" class="btn btn-coral" style="width:100%;justify-content:center;margin-top:8px;">Générer l'itinéraire</button>
+      </form>
+
+      <div class="cartouche demo-result">
+        <div class="empty-state" id="emptyState">
+          <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.2"/><path d="M20 6L23 18L20 34L17 18Z" fill="currentColor"/></svg>
+          <p>Remplissez le formulaire et cliquez sur « Générer l'itinéraire » pour voir un exemple de rendu.</p>
+        </div>
+        <div class="loading-state" id="loadingState">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span id="loadingLabel">Génération en cours…</span>
+        </div>
+        <div class="result-inner" id="resultInner"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="wrap">
+    <p class="eyebrow" style="justify-content:center;">Prêt à démarrer</p>
+    <h2>Intégrez Cartouche à votre agence en un après-midi.</h2>
+    <p>Documentation d'API, clé de test, et support pour la mise en marque blanche.</p>
+    <a href="#demo" class="btn btn-brass">Voir la démo</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>Cartouche — générateur d'itinéraires en marque blanche</span>
+    <span>API DeepSeek + Mapbox</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+document.querySelectorAll('.cartouche').forEach(function(box){
+  ['tl','tr','bl','br'].forEach(function(pos){
+    var span = document.createElement('span');
+    span.className = 'corner ' + pos;
+    box.appendChild(span);
+  });
+});
+
+gsap.registerPlugin(ScrollTrigger);
+
+var path = document.getElementById('routePathDraw');
+var len = path.getTotalLength();
+path.style.strokeDasharray = len;
+path.style.strokeDashoffset = len;
+
+var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+heroTl
+  .from('header', { y: -20, opacity: 0, duration: 0.5 })
+  .from('.eyebrow', { y: 16, opacity: 0, duration: 0.5 }, 0.15)
+  .from('h1', { y: 24, opacity: 0, duration: 0.7 }, 0.25)
+  .from('.hero p.lede', { y: 16, opacity: 0, duration: 0.6 }, 0.45)
+  .from('.hero-ctas', { y: 16, opacity: 0, duration: 0.5 }, 0.55)
+  .to(path, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' }, 0.5)
+  .from('.pin', { scale: 0, opacity: 0, duration: 0.4, stagger: 0.25, ease: 'back.out(2)' }, 0.7);
+
+gsap.utils.toArray('.step-grid .cartouche').forEach(function(card, i){
+  gsap.from(card, {
+    scrollTrigger: { trigger: card, start: 'top 85%' },
+    y: 30, opacity: 0, duration: 0.6, delay: i * 0.08, ease: 'power2.out'
+  });
+});
+
+gsap.from('.wl-copy > *', {
+  scrollTrigger: { trigger: '.whitelabel', start: 'top 75%' },
+  y: 20, opacity: 0, duration: 0.6, stagger: 0.08
+});
+gsap.from('.mock-pdf', {
+  scrollTrigger: { trigger: '.whitelabel', start: 'top 75%' },
+  y: 30, opacity: 0, duration: 0.7, ease: 'power2.out'
+});
+
+document.querySelectorAll('.swatch').forEach(function(sw){
+  sw.addEventListener('click', function(){
+    document.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('active'); });
+    sw.classList.add('active');
+    gsap.to('#mockHead', { backgroundColor: sw.dataset.color, duration: 0.35 });
+  });
+});
+
+document.querySelectorAll('.chip').forEach(function(chip){
+  chip.addEventListener('click', function(){ chip.classList.toggle('active'); });
+});
+
+var SAMPLE_DATA = {
+  kinshasa: {
+    destination: 'Kinshasa', duration_days: 3,
+    summary: "Trois jours entre marchés vivants, bords du fleuve Congo et scène culturelle locale, pensés pour un rythme tranquille.",
+    days: [
+      { day_number: 1, title: 'Rive et marché', stops: [
+        { name: 'Marché central', description: "Immersion dans l'artisanat et les produits locaux dès le matin.", time_of_day: 'matin', estimated_cost: 'Gratuit' },
+        { name: 'Bord du fleuve Congo', description: 'Promenade au coucher de soleil face au fleuve.', time_of_day: 'soir', estimated_cost: '10 USD' }
+      ]},
+      { day_number: 2, title: 'Culture et mémoire', stops: [
+        { name: 'Académie des Beaux-Arts', description: "Galerie d'art contemporain congolais, expositions tournantes.", time_of_day: 'matin', estimated_cost: '5 USD' },
+        { name: "Restaurant Chez Bruxelles", description: 'Cuisine congolaise traditionnelle, portions généreuses.', time_of_day: 'après-midi', estimated_cost: '20-30 USD' }
+      ]},
+      { day_number: 3, title: 'Quartiers et détente', stops: [
+        { name: 'Quartier de la Gombe', description: "Balade dans le quartier d'affaires en bord de fleuve.", time_of_day: 'matin', estimated_cost: 'Gratuit' }
+      ]}
+    ],
+    budget_estimate_total: '180-220 USD'
+  },
+  zanzibar: {
+    destination: 'Zanzibar', duration_days: 3,
+    summary: "Un aller-retour entre les ruelles de Stone Town et les plages du nord, pour un séjour balnéaire et culturel.",
+    days: [
+      { day_number: 1, title: 'Stone Town', stops: [
+        { name: 'Vieille ville de Stone Town', description: 'Ruelles historiques classées UNESCO, portes sculptées.', time_of_day: 'matin', estimated_cost: 'Gratuit' },
+        { name: "Marché aux épices", description: "Visite guidée d'une plantation d'épices voisine.", time_of_day: 'après-midi', estimated_cost: '15 USD' }
+      ]},
+      { day_number: 2, title: 'Plages du nord', stops: [
+        { name: 'Plage de Nungwi', description: 'Eaux turquoise, idéal pour la plongée avec tuba.', time_of_day: 'matin', estimated_cost: '25 USD' }
+      ]},
+      { day_number: 3, title: 'Retour côtier', stops: [
+        { name: 'Village de pêcheurs de Kendwa', description: 'Coucher de soleil sur la plage, dîner de fruits de mer.', time_of_day: 'soir', estimated_cost: '30 USD' }
+      ]}
+    ],
+    budget_estimate_total: '260-300 USD'
+  }
+};
+
+function genericItinerary(destination, days){
+  var stopNames = [
+    ['Marché central de ' + destination, "Premier contact avec l'ambiance locale et l'artisanat."],
+    ['Point de vue sur ' + destination, "Vue d'ensemble pour se repérer dans la ville."],
+    ['Quartier historique de ' + destination, "Balade dans les rues les plus anciennes."],
+    ['Table locale recommandée', 'Un restaurant apprécié des habitants.'],
+    ['Espace culturel de ' + destination, 'Musée ou galerie mettant en avant la scène locale.']
+  ];
+  var out = { destination: destination, duration_days: days,
+    summary: 'Un aperçu de ' + days + ' jours à ' + destination + ', pensé pour découvrir l\'essentiel à un rythme mesuré.',
+    days: [], budget_estimate_total: (days * 55) + '-' + (days * 80) + ' USD' };
+  for (var d = 1; d <= days; d++){
+    var stops = [];
+    var n = d % 2 === 0 ? 1 : 2;
+    for (var s = 0; s < n; s++){
+      var pick = stopNames[(d + s) % stopNames.length];
+      stops.push({ name: pick[0], description: pick[1], time_of_day: s === 0 ? 'matin' : 'après-midi', estimated_cost: (10 + d * 5) + ' USD' });
+    }
+    out.days.push({ day_number: d, title: 'Jour ' + d, stops: stops });
+  }
+  return out;
+}
+
+function buildResultMapSvg(itinerary){
+  var allStops = [];
+  itinerary.days.forEach(function(day){ day.stops.forEach(function(s){ allStops.push(s); }); });
+  var w = 560, h = 200, pad = 40;
+  var pts = allStops.map(function(_, i){
+    var x = pad + (i * (w - pad * 2) / Math.max(allStops.length - 1, 1));
+    var y = 60 + (i % 2 === 0 ? 0 : 90) + (Math.sin(i) * 12);
+    return [x, y];
+  });
+  var d = 'M' + pts.map(function(p){ return p[0] + ',' + p[1]; }).join(' L');
+  var pins = pts.map(function(p, i){
+    return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="10" fill="#E4572E"/>' +
+      '<text x="' + p[0] + '" y="' + (p[1] + 4) + '" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fff">' + (i + 1) + '</text>';
+  }).join('');
+  return '<svg class="result-map" viewBox="0 0 ' + w + ' ' + h + '" id="resultMapSvg">' +
+    '<rect width="' + w + '" height="' + h + '" fill="#F8F3E7"/>' +
+    '<path d="' + d + '" fill="none" stroke="#C69B3D" stroke-width="1.4" stroke-dasharray="4 6"/>' +
+    '<path d="' + d + '" id="resultMapDraw" fill="none" stroke="#3A7D71" stroke-width="1.6"/>' +
+    pins + '</svg>';
+}
+
+document.getElementById('demoForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var destination = document.getElementById('fDestination').value.trim() || 'Kinshasa';
+  var days = parseInt(document.getElementById('fDays').value, 10) || 3;
+  var key = destination.toLowerCase().trim();
+  var itinerary = SAMPLE_DATA[key] ? JSON.parse(JSON.stringify(SAMPLE_DATA[key])) : genericItinerary(destination, days);
+
+  var empty = document.getElementById('emptyState');
+  var loading = document.getElementById('loadingState');
+  var resultInner = document.getElementById('resultInner');
+
+  empty.style.display = 'none';
+  resultInner.style.display = 'none';
+  loading.style.display = 'flex';
+  gsap.fromTo('.dot', { y: 0 }, { y: -6, duration: 0.35, stagger: 0.1, repeat: 5, yoyo: true });
+
+  setTimeout(function(){
+    loading.style.display = 'none';
+    resultInner.style.display = 'block';
+
+    var html = buildResultMapSvg(itinerary);
+    html += '<p style="font-size:13.5px;color:var(--text-dark-dim);margin-bottom:20px;">' + itinerary.summary + '</p>';
+    itinerary.days.forEach(function(day){
+      html += '<div class="day-block"><p class="day-title">Jour ' + day.day_number + ' — ' + day.title + '</p>';
+      day.stops.forEach(function(stop, i){
+        html += '<div class="stop-row"><div class="stop-badge">' + (i + 1) + '</div><div>' +
+          '<div class="stop-name">' + stop.name + ' <span style="font-weight:400;color:var(--text-dark-dim);">· ' + stop.time_of_day + '</span></div>' +
+          '<div class="stop-desc">' + stop.description + '</div>' +
+          '<div class="stop-meta">' + stop.estimated_cost + '</div></div></div>';
+      });
+      html += '</div>';
+    });
+    html += '<div class="result-footer"><span class="budget-total">Budget estimé : ' + itinerary.budget_estimate_total + '</span>' +
+      '<button type="button" class="btn btn-ghost" style="border-color:rgba(27,35,64,0.22);color:var(--text-dark);" id="fakeDownload">Télécharger le PDF</button></div>';
+
+    resultInner.innerHTML = html;
+
+    var mapPath = document.getElementById('resultMapDraw');
+    var mapLen = mapPath.getTotalLength();
+    mapPath.style.strokeDasharray = mapLen;
+    mapPath.style.strokeDashoffset = mapLen;
+    gsap.to(mapPath, { strokeDashoffset: 0, duration: 1, ease: 'power2.inOut' });
+
+    gsap.from('.day-block', { y: 16, opacity: 0, duration: 0.4, stagger: 0.12, ease: 'power2.out', delay: 0.2 });
+
+    document.getElementById('fakeDownload').addEventListener('click', function(){
+      this.textContent = 'PDF (démo) — pas de fichier réel';
+      var btn = this;
+      setTimeout(function(){ btn.textContent = 'Télécharger le PDF'; }, 2200);
+    });
+  }, 900);
+});
+</script>
+</body>
+</html>

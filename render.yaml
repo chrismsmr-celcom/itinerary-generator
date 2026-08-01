@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: itinerary-generator
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: MAPBOX_API_KEY
+        sync: false
+      - key: PORT
+        value: 10000
