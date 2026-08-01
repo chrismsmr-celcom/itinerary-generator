@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { margin: 0; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #1d1d1f;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    background: {{brandColor}};
+    color: #fff;
+    padding: 40px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header img { height: 40px; }
+  .header h1 { font-size: 26px; margin: 0; font-weight: 600; }
+  .header p { margin: 4px 0 0; opacity: 0.9; font-size: 14px; }
+  .content { padding: 30px 50px; }
+  .summary { font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 24px; }
+  .map { width: 100%; border-radius: 12px; margin-bottom: 30px; }
+  .day { margin-bottom: 26px; page-break-inside: avoid; }
+  .day h2 {
+    font-size: 17px;
+    border-left: 4px solid {{brandColor}};
+    padding-left: 10px;
+    margin-bottom: 12px;
+  }
+  .stop {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    background: #f7f7f8;
+    border-radius: 10px;
+  }
+  .stop .badge {
+    background: {{brandColor}};
+    color: #fff;
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .stop .name { font-weight: 600; font-size: 13px; }
+  .stop .desc { font-size: 12px; color: #555; margin-top: 2px; }
+  .stop .meta { font-size: 11px; color: #888; margin-top: 4px; }
+  .footer-block {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #666;
+  }
+  .tips li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>{{destination}}</h1>
+      <p>{{duration_days}} jours — itinéraire personnalisé</p>
+    </div>
+    {{#if agencyLogo}}<img src="{{agencyLogo}}" alt="logo agence">{{/if}}
+  </div>
+
+  <div class="content">
+    <p class="summary">{{summary}}</p>
+
+    {{#if mapImageUrl}}
+    <img class="map" src="{{mapImageUrl}}" alt="Carte de l'itinéraire">
+    {{/if}}
+
+    {{#each days}}
+    <div class="day">
+      <h2>Jour {{day_number}} — {{title}}</h2>
+      {{#each stops}}
+      <div class="stop">
+        <div class="badge">{{addOne @index}}</div>
+        <div>
+          <div class="name">{{name}} <span style="font-weight:400;color:#999;">· {{time_of_day}}</span></div>
+          <div class="desc">{{description}}</div>
+          <div class="meta">{{estimated_cost}}</div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/each}}
+
+    <div class="footer-block">
+      <p><strong>Budget estimé total :</strong> {{budget_estimate_total}}</p>
+      {{#if practical_tips.length}}
+      <p><strong>Conseils pratiques</strong></p>
+      <ul class="tips">
+        {{#each practical_tips}}<li>{{this}}</li>{{/each}}
+      </ul>
+      {{/if}}
+    </div>
+  </div>
+</body>
+</html>
